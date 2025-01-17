@@ -1,5 +1,4 @@
 package com.becoder.service.impl;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,13 +10,18 @@ import org.springframework.util.ObjectUtils;
 
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
+import com.becoder.exception.ExistDataException;
+import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.model.Category;
 import com.becoder.repository.CategoryRepository;
 import com.becoder.service.CategoryService;
+import com.becoder.util.Validation;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-
+    
+	@Autowired
+	private Validation validation;
     @Autowired
     private CategoryRepository categoryRepo;  
     @Autowired
@@ -25,17 +29,22 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Boolean saveCategory(CategoryDto categoryDto) {
 
-//		Category category = new Category();
-//		category.setName(categoryDto.getName());
-//		category.setDescription(categoryDto.getDescription());
-//		category.setIsActive(categoryDto.getIsActive());
+    //Validation check implementation
+    	validation.categoryValidation(categoryDto);
+    	
+    //check existing category
+    	boolean exist = categoryRepo.existsByName(categoryDto.getName());
+    	if(exist)
+    	{
+    	  throw new ExistDataException("Entered Category already exists please provide differant name");	
+    	}
 
 		Category category = mapper.map(categoryDto, Category.class);
 
 		if (ObjectUtils.isEmpty(category.getId())) {
 			category.setDeleted(false);
-			category.setCreatedBy(1);
-			category.setCreatedOn(new Date());
+//			category.setCreatedBy(1);
+//			category.setCreatedOn(new Date());
 		} else {
 			updateCategory(category);
 		}
@@ -51,11 +60,11 @@ public class CategoryServiceImpl implements CategoryService {
 		Optional<Category> findById = categoryRepo.findById(category.getId());
 		if (findById.isPresent()) {
 			Category existCategory = findById.get();
-			category.setCreatedBy(existCategory.getCreatedBy());
-			category.setCreatedOn(existCategory.getCreatedOn());
+			//category.setCreatedBy(existCategory.getCreatedBy());
+			//category.setCreatedOn(existCategory.getCreatedOn());
 			category.setDeleted(existCategory.isDeleted());
-			category.setUpdatedBy(1);
-			category.setUpdatedOn(new Date());
+			//category.setUpdatedBy(1);
+			//category.setUpdatedOn(new Date());
 		}
 	}
 
@@ -77,16 +86,17 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public CategoryDto getCategoryById(Integer id) {
+	 public CategoryDto getCategoryById(Integer id) throws Exception {
+        // Correct usage of orElseThrow with a Supplier
+        Category category = categoryRepo.findByIdAndIsDeletedFalse(id);
 
-		Optional<Category> findByCatgeory = categoryRepo.findByIdAndIsDeletedFalse(id);
+        if (!ObjectUtils.isEmpty(category)) {
+            category.getName().toUpperCase(); // Make sure to assign it if you need it changed
+            return mapper.map(category, CategoryDto.class);
+        }
+        return null;
+    }
 
-		if (findByCatgeory.isPresent()) {
-			Category category = findByCatgeory.get();
-			return mapper.map(category, CategoryDto.class);
-		}
-		return null;
-	}
 	@Override
 	public Boolean deleteCategory(Integer id) {
 		Optional<Category> findByCatgeory = categoryRepo.findById(id);
