@@ -1,5 +1,7 @@
 package com.becoder.model;
 
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.ManyToAny;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -33,4 +35,8 @@ public class Notes extends BaseModel {
     private Category category;
 	@ManyToOne
 	private FileDetails fileDetails;
+	
+	private boolean isDeleted;
+	
+	private LocalDateTime deletedOn;
 }

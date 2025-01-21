@@ -1,5 +1,7 @@
 package com.becoder.repository;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -16,6 +18,12 @@ import com.becoder.model.Category;
 import com.becoder.model.Notes;
 
 public interface NotesRepository extends JpaRepository<Notes, Integer> {
+
+	Page<Notes> findByCreatedBy(int userId, Pageable pageable);
+
+	List<Notes> findByCreatedByAndIsDeletedTrue(int id);
+
+	List<Notes> findAllByIsDeletedAndDeletedOnBefore(boolean b, LocalDateTime cutOffDate);
 	
 	//List<Notes> getAllNotes();
 	
