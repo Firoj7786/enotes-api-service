@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.becoder.dto.FavouriteNoteDto;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesResponse;
 import com.becoder.dto.SpecificResponssDto;
@@ -32,6 +33,14 @@ public interface NotesService {
 	 public void hardDeleteNotes(Integer id) throws Exception;
 
 	 public void emptyRecycleBin(int userId);
+
+	 public void favouriteNotes(int NoteId) throws ResourceNotFoundException;
+
+	 public void unFavoriteNotes(Integer favouriteNoteId) throws Exception;
+
+	 public List<FavouriteNoteDto> getUserFavoriteNotes() throws Exception;
+
+	 public boolean copyNotes(Integer id) throws ResourceNotFoundException;
 
 
 }
