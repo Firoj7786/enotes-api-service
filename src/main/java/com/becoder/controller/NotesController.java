@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.becoder.dto.FavouriteNoteDto;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesResponse;
 import com.becoder.dto.SpecificResponssDto;
@@ -116,5 +117,32 @@ public class NotesController {
 		int userId = 2;
 		notesService.emptyRecycleBin(userId);
 		return CommonUtils.createBuildResponseMessage("Delete Success", HttpStatus.OK);
+	}
+	@GetMapping("/fav/{noteId}")
+	public ResponseEntity<?> favouriteNotes(@PathVariable int noteId) throws Exception {
+		notesService.favouriteNotes(noteId);
+		return CommonUtils.createBuildResponseMessage("Note Added to Favourites Successfully", HttpStatus.OK);
+
+	}
+	@GetMapping("/unfav/{favNotId}")
+	public ResponseEntity<?> unfavouriteNotes(@PathVariable int favNotId) throws Exception {
+		notesService.unFavoriteNotes(favNotId);
+		return CommonUtils.createBuildResponseMessage("Note removed from Favourite", HttpStatus.OK);
+	}
+	@GetMapping("/favList")
+	public ResponseEntity<?> getUserfavouriteNotes() throws Exception {
+		int userId = 2;
+		List<FavouriteNoteDto> notes= notesService.getUserFavoriteNotes();
+		if(!CollectionUtils.isEmpty(notes)) {
+		return CommonUtils.createBuildResponse(notes, HttpStatus.OK);}
+		return CommonUtils.createErrorResponseMessage("Favourite Notes collection is empty", HttpStatus.NOT_FOUND);
+		}
+	@GetMapping("/copy/{id}")
+	public ResponseEntity<?> copyNotes(@PathVariable Integer id) throws Exception {
+		Boolean copyNotes = notesService.copyNotes(id);
+		if (copyNotes) {
+			return CommonUtils.createBuildResponseMessage("Copied success", HttpStatus.CREATED);
+		}
+		return CommonUtils.createErrorResponseMessage("Copy failed ! Try Again", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

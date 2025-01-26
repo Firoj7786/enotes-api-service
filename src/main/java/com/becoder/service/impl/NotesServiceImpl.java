@@ -27,15 +27,18 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.becoder.dto.FavouriteNoteDto;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesDto.CategoryDto;
 import com.becoder.dto.NotesDto.FilesDto;
 import com.becoder.dto.NotesResponse;
 import com.becoder.model.Category;
+import com.becoder.model.FavouriteNote;
 import com.becoder.model.FileDetails;
 import com.becoder.model.Notes;
 import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.CategoryRepository;
+import com.becoder.repository.FavouriteNoteRepository;
 import com.becoder.repository.FileRepository;
 import com.becoder.repository.NotesRepository;
 import com.becoder.service.NotesService;
@@ -59,6 +62,9 @@ public class NotesServiceImpl implements NotesService {
 
 	@Autowired
 	private FileRepository fileRepo;
+	
+	@Autowired
+	private FavouriteNoteRepository favouriteRepository;
 
 	@Override
 	public Boolean saveNotes(String notes, MultipartFile file) throws Exception {
@@ -236,5 +242,42 @@ public class NotesServiceImpl implements NotesService {
 		if (!CollectionUtils.isEmpty(recycleNotes)) {
 			notesRepo.deleteAll(recycleNotes);
 		}
+	}
+
+	@Override
+	public void favouriteNotes(int NoteId) throws ResourceNotFoundException {
+		int userId = 2;
+		Notes notes = notesRepo.findById(NoteId)
+				.orElseThrow(() -> new ResourceNotFoundException("Notes id invalid ! Not Found"));
+		         FavouriteNote favouriteNote = FavouriteNote.builder().note(notes).userId(userId).build();
+		         favouriteRepository.save(favouriteNote);
+	             }
+	@Override
+	public void unFavoriteNotes(Integer favouriteNoteId) throws Exception {
+		FavouriteNote favNote = favouriteRepository.findById(favouriteNoteId)
+				.orElseThrow(() -> new ResourceNotFoundException("Favourite Note Not found & Id invalid"));
+		        favouriteRepository.delete(favNote);
+	}
+
+	@Override
+	public List<FavouriteNoteDto> getUserFavoriteNotes() throws Exception {
+		int userId = 2;
+		List<FavouriteNote> favouriteNotes = favouriteRepository.findByUserId(userId);
+		return favouriteNotes.stream().map(fn -> mapper.map(fn, FavouriteNoteDto.class)).toList();
+	}
+
+	@Override
+	public boolean copyNotes(Integer id) throws ResourceNotFoundException {
+	    Notes notes = notesRepo.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Notes id invalid! Not Found"));
+	    Notes copyNote = Notes.builder()
+	            .title(notes.getTitle())
+	            .description(notes.getDescription())
+	            .category(notes.getCategory())
+	            .fileDetails(null)
+	            .isDeleted(false)
+	            .build();
+	    Notes saveCopyNote = notesRepo.save(copyNote);
+	    return !ObjectUtils.isEmpty(saveCopyNote);
 	}
 }
