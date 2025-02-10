@@ -36,6 +36,10 @@ public class UserDto {
 	 
 	private String mobNo;
 	
+	private boolean status;
+	
+	private boolean isDeleted;
+	
 	private List<RoleDto> roles;
 	
 	

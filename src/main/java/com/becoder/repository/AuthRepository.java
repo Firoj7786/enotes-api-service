@@ -8,4 +8,6 @@ public interface AuthRepository extends JpaRepository<User, Integer> {
 
 	boolean existsByEmail(String email);
 
+	User findByEmail(String username);
+
 }

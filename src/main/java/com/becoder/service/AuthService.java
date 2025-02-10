@@ -1,9 +1,11 @@
 package com.becoder.service;
 
+import com.becoder.dto.LoginRequest;
+import com.becoder.dto.LoginResponse;
 import com.becoder.dto.UserDto;
 
 public interface AuthService  {
 
-	boolean registerUser(UserDto userDto);
-
+	boolean registerUser(UserDto userDto) throws Exception;
+	public LoginResponse login(LoginRequest loginRequest);
 }
