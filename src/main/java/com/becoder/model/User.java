@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,7 +43,11 @@ public class User extends BaseModel{
 	 
 	private String mobNo;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	private boolean status;
+	
+	private boolean isDeleted;
+	
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Role> roles;
 
 }
