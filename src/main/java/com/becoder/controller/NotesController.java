@@ -73,11 +73,11 @@ public class NotesController {
 
 	}
 
-	@GetMapping("/userNotes/{userId}")
-	public ResponseEntity<?> getAllNotesByUser(@PathVariable int userId,
+	@GetMapping("/userNotes")
+	public ResponseEntity<?> getAllNotesByUser(
 			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
 			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-		NotesResponse notes = notesService.getUserNotes(userId, pageNo, pageSize);
+		NotesResponse notes = notesService.getUserNotes(pageNo, pageSize);
 //		if (CollectionUtils.isEmpty(notes)) {
 //		return ResponseEntity.noContent().build();
 //	}
@@ -97,9 +97,9 @@ public class NotesController {
 		return CommonUtils.createBuildResponseMessage("Notes restored Successfully", HttpStatus.OK);
 	}
 
-	@GetMapping("/recycle-bin/{userId}")
-	public ResponseEntity<?> getUserRecycleBinNotes(@PathVariable int userId) {
-		List<NotesDto> notes = notesService.getUserRecycleBinNotes(userId);
+	@GetMapping("/recycle-bin")
+	public ResponseEntity<?> getUserRecycleBinNotes() {
+		List<NotesDto> notes = notesService.getUserRecycleBinNotes();
 		if (!notes.isEmpty()) {
 			return CommonUtils.createBuildResponse(notes, HttpStatus.OK);
 		}
@@ -114,7 +114,7 @@ public class NotesController {
 
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> emptyRecyleBin() throws Exception {
-		int userId = 2;
+		Integer userId = CommonUtils.getLoggedInUser().getId();
 		notesService.emptyRecycleBin(userId);
 		return CommonUtils.createBuildResponseMessage("Delete Success", HttpStatus.OK);
 	}
@@ -131,7 +131,6 @@ public class NotesController {
 	}
 	@GetMapping("/favList")
 	public ResponseEntity<?> getUserfavouriteNotes() throws Exception {
-		int userId = 2;
 		List<FavouriteNoteDto> notes= notesService.getUserFavoriteNotes();
 		if(!CollectionUtils.isEmpty(notes)) {
 		return CommonUtils.createBuildResponse(notes, HttpStatus.OK);}

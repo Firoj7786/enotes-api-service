@@ -21,9 +21,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class UserDto {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+public class UserReqDto {
+
 	private Integer id;
 	 
 	private String firstName;

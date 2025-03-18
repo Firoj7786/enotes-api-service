@@ -22,13 +22,13 @@ public interface NotesService {
 
 	 public byte[] downloadFile(FileDetails fileDetails) throws IOException;
 
-	 public NotesResponse getUserNotes(int userId ,int pageNo, int pageSize);
+	 public NotesResponse getUserNotes(int pageNo, int pageSize);
 
 	 public void softDeleteNotes(Integer id) throws Exception;
 
 	 public void restoreDeletedNotes(int userId) throws ResourceNotFoundException;
 
-	 public List<NotesDto> getUserRecycleBinNotes(int userId);
+	 public List<NotesDto> getUserRecycleBinNotes();
 
 	 public void hardDeleteNotes(Integer id) throws Exception;
 

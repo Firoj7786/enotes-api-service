@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.becoder.dto.CategoryDto;
-import com.becoder.dto.UserDto;
+import com.becoder.dto.UserReqDto;
 import com.becoder.exception.ExistDataException;
 import com.becoder.exception.ValidationException;
 import com.becoder.repository.AuthRepository;
@@ -68,7 +68,7 @@ public class Validation {
 
 	}
 	
-	public void userValidation(UserDto userDto) {
+	public void userValidation(UserReqDto userDto) {
 
 		if (!StringUtils.hasText(userDto.getFirstName())) {
 			throw new IllegalArgumentException("first name is invalid");

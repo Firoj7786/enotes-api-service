@@ -44,7 +44,7 @@ public class CategoryController {
 	}
 
     @GetMapping("/")
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAllCategory(){
         List<CategoryDto> listCategory = categoryService.getAllCategory(); 
         if(CollectionUtils.isEmpty(listCategory)) {
