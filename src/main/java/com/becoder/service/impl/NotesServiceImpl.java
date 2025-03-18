@@ -175,9 +175,10 @@ public class NotesServiceImpl implements NotesService {
 	}
 
 	@Override
-	public NotesResponse getUserNotes(int userId, int pageNo, int pageSize) {
+	public NotesResponse getUserNotes( int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		Page<Notes> pageNotes = notesRepo.findByCreatedBy(userId, pageable);
+		Integer userId = CommonUtils.getLoggedInUser().getId();
+ 		Page<Notes> pageNotes = notesRepo.findByCreatedBy(userId, pageable);
 		List<NotesDto> notesDto = pageNotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();
 		NotesResponse notes = NotesResponse.builder().notes(notesDto).pageNo(pageNotes.getNumber())
 				.totalPages(pageNotes.getTotalPages()).pageSize(pageNotes.getSize())
@@ -224,8 +225,9 @@ public class NotesServiceImpl implements NotesService {
 	}
 
 	@Override
-	public List<NotesDto> getUserRecycleBinNotes(int id) {
-		List<Notes> recycleNotes = notesRepo.findByCreatedByAndIsDeletedTrue(id);
+	public List<NotesDto> getUserRecycleBinNotes() {
+		Integer userId = CommonUtils.getLoggedInUser().getId();
+		List<Notes> recycleNotes = notesRepo.findByCreatedByAndIsDeletedTrue(userId);
 		List<NotesDto> notes = recycleNotes.stream().map(note -> mapper.map(note, NotesDto.class)).toList();
 		return notes;
 	}
@@ -246,7 +248,7 @@ public class NotesServiceImpl implements NotesService {
 
 	@Override
 	public void favouriteNotes(int NoteId) throws ResourceNotFoundException {
-		int userId = 2;
+		int userId  = CommonUtils.getLoggedInUser().getId();
 		Notes notes = notesRepo.findById(NoteId)
 				.orElseThrow(() -> new ResourceNotFoundException("Notes id invalid ! Not Found"));
 		         FavouriteNote favouriteNote = FavouriteNote.builder().note(notes).userId(userId).build();
@@ -261,7 +263,7 @@ public class NotesServiceImpl implements NotesService {
 
 	@Override
 	public List<FavouriteNoteDto> getUserFavoriteNotes() throws Exception {
-		int userId = 2;
+		Integer userId = CommonUtils.getLoggedInUser().getId();
 		List<FavouriteNote> favouriteNotes = favouriteRepository.findByUserId(userId);
 		return favouriteNotes.stream().map(fn -> mapper.map(fn, FavouriteNoteDto.class)).toList();
 	}

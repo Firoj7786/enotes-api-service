@@ -3,8 +3,11 @@ package com.becoder.util;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.becoder.config.security.CustomUserDetails;
 import com.becoder.handler.GenericResponse;
+import com.becoder.model.User;
 
 public class CommonUtils {
 
@@ -67,4 +70,12 @@ public class CommonUtils {
 			return "application/octet-stream";
 		}
 	}
+	public static User getLoggedInUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof CustomUserDetails) {
+            return ((CustomUserDetails) principal).getUser();
+        }
+        return null;
+    }
 }

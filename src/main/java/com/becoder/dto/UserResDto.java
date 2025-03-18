@@ -1,17 +1,13 @@
-package com.becoder.model;
-
+package com.becoder.dto;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,9 +21,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
-public class User extends BaseModel{
+public class UserResDto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private Integer id;
@@ -37,8 +31,6 @@ public class User extends BaseModel{
 	private String lastName;
 	
 	private String email;
-	
-	private String password;
 	 
 	private String mobNo;
 	
@@ -46,7 +38,20 @@ public class User extends BaseModel{
 	
 	private boolean isDeleted;
 	
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-	private List<Role> roles;
+	private List<RoleDto> roles;
+	
+	
+	
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Getter
+	@Setter
+	@ToString
+	@Builder
+	public static class RoleDto {
+		private Integer id;
+		
+		private String name;
+	}
 
 }

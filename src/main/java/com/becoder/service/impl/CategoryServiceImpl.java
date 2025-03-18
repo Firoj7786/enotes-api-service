@@ -2,6 +2,7 @@ package com.becoder.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     private ModelMapper mapper;
     @Override
     public Boolean saveCategory(CategoryDto categoryDto) {
-
+    
     //Validation check implementation
     	validation.categoryValidation(categoryDto);
     	
@@ -71,10 +72,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
 	public List<CategoryDto> getAllCategory() {
 		List<Category> categories = categoryRepo.findAll();
-
+//
 		List<CategoryDto> categoryDtoList = categories.stream().map(cat -> mapper.map(cat, CategoryDto.class)).toList();
 
 		return categoryDtoList;
+    	 
+//        List<CategoryDto> validList = categories.stream()
+//                .filter(category -> category != null && category.getName() != null && !category.getName().isEmpty())
+//                .map(category -> mapper.map(category, CategoryDto.class))
+//                //.collect(Collectors.toList());
+//		return validList;
 	}
 	@Override
 	public List<CategoryResponse> getActiveCategory() {
